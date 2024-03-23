@@ -61,4 +61,33 @@ const login = async (req, res) => {
     }
 };
 
-export default { register, login };
+const refreshToken = async (req, res) => {
+    try {
+        const { _id, ...rest } = req.authData;
+        const existUser = await userSchema.findOne(
+            {
+                _id,
+            },
+            "-password"
+        );
+        if (!existUser) {
+            return utils.handlerResponse(res, "BAD_REQUEST", {
+                message: `User not found!`,
+            });
+        }
+        const token = utils.createToken({
+            _id: existUser._id,
+            ...existUser.toObject(),
+        });
+        return utils.handlerResponse(res, "OK", {
+            message: "Refresh Token Success!",
+            data: { token },
+        });
+    } catch (error) {
+        return utils.handlerResponse(res, "INTERNAL_ERROR", {
+            message: error?.message || error || `Internal Server Error`,
+        });
+    }
+};
+
+export default { register, login, refreshToken };

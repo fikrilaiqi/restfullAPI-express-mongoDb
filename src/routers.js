@@ -1,6 +1,7 @@
 import { Router } from "express";
 import authValidation from "./validations/authValidation.js";
 import authController from "./controllers/authController.js";
+import { checkAuth } from "./middlewares/checkAuth.js";
 
 const router = Router();
 
@@ -13,5 +14,6 @@ router.post(
     authController.register
 );
 router.post("/auth/login", authValidation.login, authController.login);
+router.get("/auth/refresh-token", checkAuth, authController.refreshToken);
 
 export default router;
