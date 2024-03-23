@@ -1,13 +1,12 @@
 import express from "express";
-import dotenv from "dotenv";
 import db from "./src/configs/db.js";
 import routers from "./src/routers.js";
+import utils from "./src/utils/index.js";
 
-dotenv.config();
 db.connectDb();
 
 const app = express();
-const PORT = process.env["PORT"];
+const PORT = utils.getEnv("PORT");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
