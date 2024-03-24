@@ -33,5 +33,6 @@ router.patch(
     blogValidation.editById,
     blogController.editById
 );
+router.delete("/blog/delete/:id", checkAuth, blogController.deleteById);
 
 export default router;

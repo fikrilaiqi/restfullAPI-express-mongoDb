@@ -117,4 +117,26 @@ const editById = async (req, res) => {
     }
 };
 
-export default { getAll, create, getById, editById };
+const deleteById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const existBlog = await blogSchema.findById(id);
+        if (!existBlog) {
+            return utils.handlerResponse(res, "NOT_FOUND", {
+                message: "Not Found Blog!",
+            });
+        }
+        //rm file thumbnail
+        utils.processUploadFile(false, existBlog?.toObject().thumbnail);
+        await blogSchema.deleteOne({ _id: id });
+        return utils.handlerResponse(res, "OK", {
+            message: "Delete Blog By Id Success!",
+        });
+    } catch (error) {
+        return utils.handlerResponse(res, "INTERNAL_ERROR", {
+            message: error?.message || error || `Internal Server Error`,
+        });
+    }
+};
+
+export default { getAll, create, getById, editById, deleteById };
