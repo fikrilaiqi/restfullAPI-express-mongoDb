@@ -34,5 +34,6 @@ router.patch(
     blogController.editById
 );
 router.delete("/blog/delete/:id", checkAuth, blogController.deleteById);
+router.get("/blog/history/:authorId", blogController.historyByAuthorId);
 
 export default router;
