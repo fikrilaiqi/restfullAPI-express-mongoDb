@@ -72,4 +72,49 @@ const getById = async (req, res) => {
     }
 };
 
-export default { getAll, create, getById };
+const editById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const input = req.body;
+        const file = req.files;
+        const existBlog = await blogSchema.findById(id);
+        if (!existBlog) {
+            return utils.handlerResponse(res, "NOT_FOUND", {
+                message: "Not Found Blog!",
+            });
+        }
+
+        if (existBlog.toObject().thumbnail && !input?.old_thumbnail) {
+            return utils.handlerResponse(res, "BAD_REQUEST", {
+                message: "Found file thumbnail, old_thumbnaul is required!",
+            });
+        }
+
+        const authorId = req.authData._id;
+        const { fileName, error: errFileUpload } = utils.processUploadFile(
+            file.thumbnail,
+            input.old_thumbnail
+        );
+        if (errFileUpload) {
+            throw Error(errFileUpload);
+        }
+
+        const updateBlog = {
+            ...input,
+            author_id: authorId,
+            thumbnail: fileName,
+            tags: input?.tags ? input?.tags.split(",") : "",
+        };
+
+        await blogSchema.findOneAndUpdate({ _id: id }, { $set: updateBlog });
+        return utils.handlerResponse(res, "OK", {
+            message: "Edit Blog Success!",
+        });
+    } catch (error) {
+        return utils.handlerResponse(res, "INTERNAL_ERROR", {
+            message: error?.message || error || `Internal Server Error`,
+        });
+    }
+};
+
+export default { getAll, create, getById, editById };

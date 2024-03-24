@@ -14,7 +14,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(fileUpload({ limits: { fileSize: 10 * 1024 * 1024 } }));
 app.use(routers);
 //static folder
-app.use("/uploads", express.static("uploads"));
+app.use("./uploads", express.static("uploads"));
 
 app.get("/", (req, res) => {
     res.send("Server Express");

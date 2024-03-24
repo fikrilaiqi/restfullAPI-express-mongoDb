@@ -82,6 +82,7 @@ const toUploadFile = (file) => {
 };
 
 const processUploadFile = (file, oldFileName) => {
+    console.log(oldFileName);
     let result = { fileName: null };
     try {
         if (oldFileName) {

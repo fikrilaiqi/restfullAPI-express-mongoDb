@@ -27,5 +27,11 @@ router.post(
     blogController.create
 );
 router.get("/blog/:id", blogController.getById);
+router.patch(
+    "/blog/edit/:id",
+    checkAuth,
+    blogValidation.editById,
+    blogController.editById
+);
 
 export default router;
