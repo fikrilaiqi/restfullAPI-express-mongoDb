@@ -17,4 +17,37 @@ const getAll = async (req, res) => {
     }
 };
 
-export default { getAll };
+const create = async (req, res) => {
+    try {
+        const input = req.body;
+        const file = req.files;
+
+        //upload file
+        const { fileName, error: errFileUpload } = utils.processUploadFile(
+            file.thumbnail
+        );
+        if (errFileUpload) {
+            throw Error(errFileUpload);
+        }
+
+        const authorId = req.authData._id;
+        const createBlog = {
+            ...input,
+            author_id: authorId,
+            thumbnail: fileName,
+            tags: input?.tags ? input?.tags.split(",") : "",
+        };
+
+        const create = blogSchema.create(createBlog);
+        return utils.handlerResponse(res, "CREATED", {
+            message: "Create Blog Success!",
+            data: create,
+        });
+    } catch (error) {
+        return utils.handlerResponse(res, "INTERNAL_ERROR", {
+            message: error?.message || error || `Internal Server Error`,
+        });
+    }
+};
+
+export default { getAll, create };

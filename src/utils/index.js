@@ -1,5 +1,7 @@
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
+import fs from "fs";
+
 const getEnv = (name = "") => {
     dotenv.config();
     return process.env[`${name}`];
@@ -63,4 +65,39 @@ const createToken = (payload = {}) => {
     return jwt.sign(payload, secret, { expiresIn: "24h" });
 };
 
-export default { handlerResponse, validationInput, getEnv, createToken };
+const toUploadFile = (file) => {
+    let result = { fileName: null };
+    try {
+        if (!file) return { ...result, error: "Not Found File Upload!" };
+        const originName = file.name;
+        const unixTimestime = Math.round(Date.now());
+        const rename = `${unixTimestime}-${originName}`;
+        fs.writeFileSync(`./uploads/${rename}`, file.data);
+        return { ...result, fileName: rename };
+    } catch (error) {
+        return { ...result, error: error.message };
+    }
+};
+
+const processUploadFile = (file, oldFileName) => {
+    let result = { fileName: null };
+    try {
+        if (oldFileName) {
+            fs.unlinkSync(`./uploads/${oldFileName}`);
+        }
+        if (file) {
+            result = toUploadFile(file);
+        }
+        return result;
+    } catch (error) {
+        return { ...result, error: error.message };
+    }
+};
+
+export default {
+    handlerResponse,
+    validationInput,
+    getEnv,
+    createToken,
+    processUploadFile,
+};
