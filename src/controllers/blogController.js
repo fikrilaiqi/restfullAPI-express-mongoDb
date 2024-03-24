@@ -50,4 +50,26 @@ const create = async (req, res) => {
     }
 };
 
-export default { getAll, create };
+const getById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const existBlog = await blogSchema
+            .findById(id)
+            .populate("author_id", "username image");
+        if (!existBlog) {
+            return utils.handlerResponse(res, "NOT_FOUND", {
+                message: "Not Found Blog!",
+            });
+        }
+        return utils.handlerResponse(res, "OK", {
+            message: "Get Blog By Id Success!",
+            data: existBlog,
+        });
+    } catch (error) {
+        return utils.handlerResponse(res, "INTERNAL_ERROR", {
+            message: error?.message || error || `Internal Server Error`,
+        });
+    }
+};
+
+export default { getAll, create, getById };

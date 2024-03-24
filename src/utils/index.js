@@ -17,6 +17,8 @@ const getHttpCodeResponse = (type = "") => {
             return { code: 400, status: "error" };
         case "UNAUTHORIZED":
             return { code: 401, status: "error" };
+        case "NOT_FOUND":
+            return { code: 404, status: "error" };
         case "INTERNAL_ERROR":
             return {
                 code: 500,
