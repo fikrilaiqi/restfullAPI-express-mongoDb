@@ -4,6 +4,7 @@ import authController from "./controllers/authController.js";
 import { checkAuth } from "./middlewares/checkAuth.js";
 import blogController from "./controllers/blogController.js";
 import blogValidation from "./validations/blogValidation.js";
+import bookmarkController from "./controllers/bookmarkController.js";
 
 const router = Router();
 
@@ -35,5 +36,8 @@ router.patch(
 );
 router.delete("/blog/delete/:id", checkAuth, blogController.deleteById);
 router.get("/blog/history/:authorId", blogController.historyByAuthorId);
+
+//bookmark
+router.post("/bookmark/create", checkAuth, bookmarkController.create);
 
 export default router;
