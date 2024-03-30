@@ -45,5 +45,10 @@ router.get(
     bookmarkController.historyUserByBlogId
 );
 router.get("/bookmark/history/:userId", bookmarkController.historyByUserId);
+router.delete(
+    "/bookmark/delete/:blogId",
+    checkAuth,
+    bookmarkController.deleteByBlogId
+);
 
 export default router;

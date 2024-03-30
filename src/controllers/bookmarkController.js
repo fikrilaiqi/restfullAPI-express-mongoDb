@@ -95,4 +95,33 @@ const historyByUserId = async (req, res) => {
     }
 };
 
-export default { create, historyUserByBlogId, historyByUserId };
+const deleteByBlogId = async (req, res) => {
+    try {
+        const { blogId } = req.params;
+        const userId = req.authData._id;
+
+        const query = {
+            user_id: userId,
+            blog_id: blogId,
+        };
+
+        const existBookmark = await bookmarkSchema.findOne(query);
+
+        if (!existBookmark) {
+            return utils.handlerResponse(res, "NOT_FOUND", {
+                message: "Not found bookmark!",
+            });
+        }
+
+        await bookmarkSchema.deleteOne(query);
+        return utils.handlerResponse(res, "OK", {
+            message: "Delete bookmark success!",
+        });
+    } catch (error) {
+        return utils.handlerResponse(res, "INTERNAL_ERROR", {
+            message: error?.message || error || `Internal Server Error`,
+        });
+    }
+};
+
+export default { create, historyUserByBlogId, historyByUserId, deleteByBlogId };
