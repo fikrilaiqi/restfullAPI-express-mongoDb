@@ -40,4 +40,33 @@ const create = async (req, res) => {
     }
 };
 
-export default { create };
+const historyUserByBlogId = async (req, res) => {
+    try {
+        const { blogId } = req.params;
+        const userId = req.authData._id;
+
+        const exitBookmark = await bookmarkSchema
+            .findOne({
+                blog_id: blogId,
+                user_id: userId,
+            })
+            .populate("blog_id", "title tags");
+
+        if (!exitBookmark) {
+            return utils.handlerResponse(res, "NOT_FOUND", {
+                message: "Empty history bookmark!",
+            });
+        }
+
+        return utils.handlerResponse(res, "OK", {
+            message: "Get History user by blog id success!",
+            data: exitBookmark,
+        });
+    } catch (error) {
+        return utils.handlerResponse(res, "INTERNAL_ERROR", {
+            message: error?.message || error || `Internal Server Error`,
+        });
+    }
+};
+
+export default { create, historyUserByBlogId };

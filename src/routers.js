@@ -39,5 +39,10 @@ router.get("/blog/history/:authorId", blogController.historyByAuthorId);
 
 //bookmark
 router.post("/bookmark/create", checkAuth, bookmarkController.create);
+router.get(
+    "/bookmark/history-user/:blogId",
+    checkAuth,
+    bookmarkController.historyUserByBlogId
+);
 
 export default router;
