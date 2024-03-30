@@ -69,4 +69,30 @@ const historyUserByBlogId = async (req, res) => {
     }
 };
 
-export default { create, historyUserByBlogId };
+const historyByUserId = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const histories = await bookmarkSchema.find({ user_id: userId });
+
+        const blogIds = [];
+        for (let i = 0; i < histories.length; i++) {
+            const { blog_id } = histories[i];
+            blogIds.push(blog_id);
+        }
+
+        const listBlogs = await blogSchema
+            .find({ _id: { $in: blogIds } })
+            .populate("author_id", "username image");
+
+        return utils.handlerResponse(res, "OK", {
+            message: "Get History by user id success!",
+            data: listBlogs,
+        });
+    } catch (error) {
+        return utils.handlerResponse(res, "INTERNAL_ERROR", {
+            message: error?.message || error || `Internal Server Error`,
+        });
+    }
+};
+
+export default { create, historyUserByBlogId, historyByUserId };

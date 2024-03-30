@@ -44,5 +44,6 @@ router.get(
     checkAuth,
     bookmarkController.historyUserByBlogId
 );
+router.get("/bookmark/history/:userId", bookmarkController.historyByUserId);
 
 export default router;
